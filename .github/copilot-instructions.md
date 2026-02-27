@@ -1,0 +1,14 @@
+- [x] Verify that the copilot-instructions.md file in the .github directory is created.
+- [x] Clarify Project Requirements
+- [x] Scaffold the Project
+- [x] Customize the Project
+- [x] Install Required Extensions (No extensions needed)
+- [x] Compile the Project
+- [ ] Create and Run Task
+- [ ] Launch the Project (Requires user confirmation)
+- [x] Ensure Documentation is Complete
+
+- Workspace root is `Library-Management-System`.
+- Project scaffold and customization are complete for client, server, and database modules.
+- README and this file are present and updated.
+- Next operational step is to run via npm scripts in `client` and `server`.

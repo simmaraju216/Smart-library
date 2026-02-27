@@ -1,0 +1,83 @@
+CREATE DATABASE IF NOT EXISTS smart_library;
+USE smart_library;
+
+CREATE TABLE IF NOT EXISTS batches (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS branches (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS students (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(120) NOT NULL,
+  email VARCHAR(120) NOT NULL UNIQUE,
+  phone VARCHAR(20),
+  password VARCHAR(255) NOT NULL,
+  batch_id INT,
+  branch_id INT,
+  year INT,
+  role ENUM('admin', 'student') NOT NULL DEFAULT 'student',
+  first_login TINYINT(1) DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (batch_id) REFERENCES batches(id),
+  FOREIGN KEY (branch_id) REFERENCES branches(id)
+);
+
+CREATE TABLE IF NOT EXISTS books (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  title VARCHAR(200) NOT NULL,
+  author VARCHAR(120) NOT NULL,
+  quantity INT NOT NULL,
+  available_quantity INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS transactions (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  student_id INT NOT NULL,
+  book_id INT NOT NULL,
+  issue_date DATE NOT NULL,
+  due_date DATE NOT NULL,
+  return_date DATE,
+  status ENUM('issued', 'returned') DEFAULT 'issued',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (student_id) REFERENCES students(id),
+  FOREIGN KEY (book_id) REFERENCES books(id)
+);
+
+CREATE TABLE IF NOT EXISTS late_fee (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  transaction_id INT NOT NULL UNIQUE,
+  days_late INT NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  paid TINYINT(1) DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (transaction_id) REFERENCES transactions(id)
+);
+
+CREATE TABLE IF NOT EXISTS ratings (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  student_id INT NOT NULL,
+  rating INT NOT NULL,
+  comment VARCHAR(500),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (student_id) REFERENCES students(id)
+);
+
+CREATE TABLE IF NOT EXISTS suggestions (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  student_id INT NOT NULL,
+  suggestion VARCHAR(500) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (student_id) REFERENCES students(id)
+);
+
+CREATE TABLE IF NOT EXISTS library_faq (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  question VARCHAR(255) NOT NULL,
+  answer TEXT NOT NULL
+);
