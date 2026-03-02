@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import libraryBg from "../../assets/images/librarypic.jpg";
 
 const Login = () => {
+  // PRODUCTION: Remove hardcoded demo credentials and initialize these as empty strings.
   const [email, setEmail] = useState("admin@gmail.com");
   const [password, setPassword] = useState("Admin123");
   const [showPassword, setShowPassword] = useState(false);

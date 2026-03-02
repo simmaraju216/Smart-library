@@ -1,5 +1,3 @@
-USE smart_library;
-
 INSERT INTO batches (name) VALUES ('2022'), ('2023'), ('2024')
 ON DUPLICATE KEY UPDATE name = VALUES(name);
 

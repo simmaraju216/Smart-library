@@ -8,6 +8,7 @@ export const authMiddleware = (req, res, next) => {
 
   const token = authHeader.split(' ')[1];
   try {
+    // PRODUCTION: Always provide JWT_SECRET via environment variables and do not rely on fallback value.
     const payload = jwt.verify(token, process.env.JWT_SECRET || 'change_me');
     req.user = payload;
     next();

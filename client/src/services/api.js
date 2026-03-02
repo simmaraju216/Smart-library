@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
+  // PRODUCTION: Set VITE_API_URL in client/.env to your deployed backend URL and avoid relying on localhost fallback.
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 });
 

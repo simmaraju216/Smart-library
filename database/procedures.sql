@@ -1,5 +1,3 @@
-USE smart_library;
-
 DELIMITER $$
 
 CREATE PROCEDURE IF NOT EXISTS calculate_late_fee(IN tx_id INT, OUT days_late INT, OUT fine_amount DECIMAL(10,2))
