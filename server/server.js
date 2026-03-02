@@ -19,6 +19,8 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
+// PRODUCTION: Frontend deployed at https://smart-library-eight.vercel.app/
+// If you restrict CORS, use FRONTEND_URL from environment with this value.
 app.use(cors());
 app.use(express.json());
 

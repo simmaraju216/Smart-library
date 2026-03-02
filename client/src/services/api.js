@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  // PRODUCTION: Set VITE_API_URL in client/.env to your deployed backend URL and avoid relying on localhost fallback.
+  // PRODUCTION: Set VITE_API_URL in client/.env.production to your backend API base.
+  // Current deployed backend: https://smart-library-n8ze.onrender.com/api
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 });
 
