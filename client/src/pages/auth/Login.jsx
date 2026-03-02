@@ -22,8 +22,9 @@ const Login = () => {
         return;
       }
       navigate(user.role === "admin" ? "/admin" : "/student");
-    } catch {
-      setError("Invalid credentials");
+    } catch (err) {
+      const serverMessage = err?.response?.data?.message;
+      setError(serverMessage || "Login failed");
     }
   };
 

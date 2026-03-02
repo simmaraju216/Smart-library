@@ -12,6 +12,7 @@ import feedbackRoutes from './routes/feedbackRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import branchRoutes from './routes/branchRoutes.js';
 import { startScheduler } from './services/scheduler.js';
+import { initDatabase } from './config/initDatabase.js';
 
 dotenv.config();
 
@@ -34,11 +35,26 @@ app.use('/api/feedback', feedbackRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/branches', branchRoutes);
 
+app.use((_req, res) => {
+  res.status(404).json({ success: false, message: 'Route not found' });
+});
+
+app.use((err, _req, res, _next) => {
+  console.error('[Server] Unhandled error:', err.message);
+  res.status(500).json({ success: false, message: 'Internal server error' });
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('[Server] Unhandled rejection:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('[Server] Uncaught exception:', error);
+});
+
 const startServer = async () => {
   try {
-    const connection = await pool.getConnection();
-    console.log("✅ Database connected successfully");
-    connection.release();
+    await initDatabase(pool);
 
     app.listen(port, () => {
       console.log(`🚀 Server started on port ${port}`);

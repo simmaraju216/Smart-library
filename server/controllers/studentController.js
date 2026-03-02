@@ -33,9 +33,9 @@ export const listStudents = async (req, res) => {
 };
 
 export const addStudent = async (req, res) => {
-  const { name, email, phone, batch_id, branch_id, year } = req.body;
+  const { student_id, name, email, phone, batch_id, branch_id, year } = req.body;
   const passwordHash = await bcrypt.hash('Welcome@123', 10);
-  const id = await createStudent({ name, email, phone, passwordHash, batch_id, branch_id, year });
+  const id = await createStudent({ student_id, name, email, phone, passwordHash, batch_id, branch_id, year });
   res.status(201).json({ id, message: 'Student created' });
 };
 

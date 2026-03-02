@@ -5,10 +5,10 @@ export const getAllStudents = async () => {
   return rows;
 };
 
-export const createStudent = async ({ name, email, phone, passwordHash, batch_id, branch_id, year }) => {
+export const createStudent = async ({ student_id, name, email, phone, passwordHash, batch_id, branch_id, year }) => {
   const [result] = await pool.query(
-    'INSERT INTO students (name, email, phone, password, batch_id, branch_id, year, role, first_login) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-    [name, email, phone, passwordHash, batch_id, branch_id, year, 'student', 1]
+    'INSERT INTO students (student_id, name, email, phone, password, batch_id, branch_id, year, role, first_login) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    [student_id || null, name, email, phone, passwordHash, batch_id, branch_id, year, 'student', 1]
   );
   return result.insertId;
 };

@@ -7,18 +7,29 @@ const ManageBatch = () => {
 	const [batchName, setBatchName] = useState('');
 	const [selectedBatch, setSelectedBatch] = useState('');
 	const [msg, setMsg] = useState('');
+	const [msgType, setMsgType] = useState('success');
 
 	const loadBatches = async () => {
-		const res = await api.get('/students/batches');
-		setBatches(res.data);
+		try {
+			const res = await api.get('/students/batches');
+			setBatches(res.data);
+		} catch (error) {
+			setMsgType('error');
+			setMsg(error?.response?.data?.message || 'Unable to load batches. Please login again.');
+		}
 	};
 
 
 	const loadStudents = async (batchId) => {
 		if (!batchId) { setStudents([]); return; }
-		const res = await api.get('/students');
-		// Only show students (not admins) in the selected batch
-		setStudents(res.data.filter(s => s.batch_id == batchId && s.role === 'student'));
+		try {
+			const res = await api.get('/students');
+			// Only show students (not admins) in the selected batch
+			setStudents(res.data.filter(s => s.batch_id == batchId && s.role === 'student'));
+		} catch (error) {
+			setMsgType('error');
+			setMsg(error?.response?.data?.message || 'Unable to load students.');
+		}
 	};
 
 	useEffect(() => { loadBatches(); }, []);
@@ -27,10 +38,16 @@ const ManageBatch = () => {
 	const submit = async (e) => {
 		e.preventDefault();
 		if (!batchName) return;
-		await api.post('/students/batches', { name: batchName });
-		setMsg('Batch added');
-		setBatchName('');
-		await loadBatches();
+		try {
+			await api.post('/students/batches', { name: batchName });
+			setMsgType('success');
+			setMsg('Batch added');
+			setBatchName('');
+			await loadBatches();
+		} catch (error) {
+			setMsgType('error');
+			setMsg(error?.response?.data?.error || error?.response?.data?.message || 'Unable to add batch.');
+		}
 	};
 
 	return (
@@ -44,7 +61,7 @@ const ManageBatch = () => {
 					onChange={e => setBatchName(e.target.value)}
 				/>
 				<button className="bg-slate-900 text-white px-4 py-2 rounded">Add Batch</button>
-				{msg && <p className="text-green-600">{msg}</p>}
+				{msg && <p className={msgType === 'success' ? 'text-green-600' : 'text-red-600'}>{msg}</p>}
 			</form>
 
 			<div className="bg-white p-4 rounded shadow max-w-xl">

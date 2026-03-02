@@ -7,9 +7,14 @@ export const authMiddleware = (req, res, next) => {
   }
 
   const token = authHeader.split(' ')[1];
+  const jwtSecret = process.env.JWT_SECRET;
+  if (!jwtSecret) {
+    console.error('[Auth] Missing JWT_SECRET in environment.');
+    return res.status(500).json({ message: 'Server misconfigured' });
+  }
+
   try {
-    // PRODUCTION: Always provide JWT_SECRET via environment variables and do not rely on fallback value.
-    const payload = jwt.verify(token, process.env.JWT_SECRET || 'change_me');
+    const payload = jwt.verify(token, jwtSecret);
     req.user = payload;
     next();
   } catch {

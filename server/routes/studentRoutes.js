@@ -7,6 +7,21 @@ const router = express.Router();
 
 router.get('/', authMiddleware, allowRoles('admin'), listStudents);
 router.post('/', authMiddleware, allowRoles('admin'), addStudent);
+router.get('/dashboard-stats', authMiddleware, allowRoles('admin'), async (_req, res) => {
+	try {
+		const [[stats]] = await pool.query(
+			`SELECT
+				(SELECT COUNT(*) FROM students WHERE role = 'student') AS students,
+				(SELECT COUNT(*) FROM books) AS books,
+				(SELECT COUNT(*) FROM transactions WHERE status = 'issued') AS issued,
+				(SELECT COUNT(*) FROM suggestions) AS suggestions`
+		);
+		res.json(stats);
+	} catch (error) {
+		console.error('[Dashboard Stats] Failed to fetch stats:', error.message);
+		res.status(500).json({ message: 'Failed to fetch dashboard stats' });
+	}
+});
 // Batch list for dropdown
 import pool from '../config/db.js';
 router.get('/batches', authMiddleware, allowRoles('admin'), async (_req, res) => {

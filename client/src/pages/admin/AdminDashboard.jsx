@@ -3,10 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { Users, BookOpen, BookCheck, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getStudents } from "../../services/studentService";
-import { getBooks } from "../../services/bookService";
-import { getTransactions } from "../../services/transactionService";
-import api from "../../services/api";
+import { getAdminDashboardStats } from "../../services/dashboardService";
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -17,24 +14,21 @@ const AdminDashboard = () => {
     issued: 0,
     suggestions: 0,
   });
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [students, books, transactions, suggestions] = await Promise.all([
-          getStudents(),
-          getBooks(),
-          getTransactions(),
-          api.get("/feedback/suggestions").then(res => res.data),
-        ]);
+        const dashboardStats = await getAdminDashboardStats();
         setStats({
-          students: students.filter(s => s.role === "student").length,
-          books: books.length,
-          issued: transactions.filter(t => t.status === "issued").length,
-          suggestions: suggestions.length,
+          students: Number(dashboardStats.students || 0),
+          books: Number(dashboardStats.books || 0),
+          issued: Number(dashboardStats.issued || 0),
+          suggestions: Number(dashboardStats.suggestions || 0),
         });
+        setError("");
       } catch (err) {
-        // Optionally handle error
+        setError(err?.response?.data?.message || "Unable to load dashboard stats.");
       }
     };
     fetchStats();
@@ -77,6 +71,7 @@ const AdminDashboard = () => {
         <p className="text-slate-500 mt-1 md:mt-2 text-sm md:text-base">
           Here’s what’s happening in your Smart Library today.
         </p>
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
       </div>
 
       {/* Stats Cards */}
