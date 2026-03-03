@@ -41,7 +41,9 @@ const Layout = ({ children }) => {
       </div>
       <div className="flex flex-1 pt-20"> {/* pt-20 for navbar height */}
         {/* Fixed Sidebar (md+) or overlay (mobile) */}
-        <div className="fixed top-20 left-0 h-[calc(100vh-5rem)] w-64 z-40 md:block" style={{ display: sidebarOpen ? 'block' : undefined }}>
+        <div
+          className={`fixed top-20 left-0 h-[calc(100vh-5rem)] w-64 z-40 md:block ${sidebarOpen ? 'block' : 'hidden'}`}
+        >
           <Sidebar open={sidebarOpen} onClose={closeSidebar} />
         </div>
         {/* Main Content Scrollable */}

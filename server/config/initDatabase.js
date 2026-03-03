@@ -68,6 +68,7 @@ const TABLE_CREATION_QUERIES = [
     issue_date DATE NOT NULL,
     due_date DATE NOT NULL,
     return_date DATE DEFAULT NULL,
+    return_at TIMESTAMP NULL DEFAULT NULL,
     status ENUM('issued','returned') NOT NULL DEFAULT 'issued',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
@@ -180,6 +181,24 @@ export const initDatabase = async (pool) => {
     }
   } catch (error) {
     console.error('Table migration skipped due to error:', error.message);
+  }
+
+  try {
+    const [returnAtRows] = await pool.query(
+      `SELECT COLUMN_NAME
+       FROM INFORMATION_SCHEMA.COLUMNS
+       WHERE TABLE_SCHEMA = ?
+         AND TABLE_NAME = 'transactions'
+         AND COLUMN_NAME = 'return_at'`,
+      [process.env.DB_NAME]
+    );
+
+    if (returnAtRows.length === 0) {
+      await pool.query('ALTER TABLE transactions ADD COLUMN return_at TIMESTAMP NULL DEFAULT NULL AFTER return_date');
+      console.log('Transactions migration applied: added return_at');
+    }
+  } catch (error) {
+    console.error('Transactions migration skipped due to error:', error.message);
   }
 
   try {

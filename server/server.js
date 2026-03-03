@@ -17,7 +17,7 @@ import { initDatabase } from './config/initDatabase.js';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5000;
+const basePort = Number(process.env.PORT) || 5000;
 
 /* =====================================
    PRODUCTION CORS (WORKS WITH VERCEL)
@@ -71,6 +71,13 @@ app.use((_req, res) => {
 app.use((err, _req, res, _next) => {
   console.error('❌ Server Error:', err.message);
 
+  if (['ETIMEDOUT', 'ECONNREFUSED', 'ENOTFOUND', 'PROTOCOL_CONNECTION_LOST'].includes(err.code)) {
+    return res.status(503).json({
+      success: false,
+      message: 'Database is unavailable. Please check database host/network settings and try again.'
+    });
+  }
+
   res.status(500).json({
     success: false,
     message: 'Internal server error'
@@ -98,10 +105,35 @@ const startServer = async () => {
     await initDatabase(pool);
     console.log('✅ Database initialized successfully');
 
-    app.listen(port, () => {
-      console.log(`🚀 Server running on port ${port}`);
-      startScheduler();
-    });
+    const maxPortRetries = 10;
+    let currentPort = basePort;
+    let serverStarted = false;
+
+    for (let attempt = 0; attempt <= maxPortRetries; attempt += 1) {
+      try {
+        await new Promise((resolve, reject) => {
+          const server = app.listen(currentPort, () => resolve(server));
+          server.on('error', reject);
+        });
+
+        console.log(`🚀 Server running on port ${currentPort}`);
+        startScheduler();
+        serverStarted = true;
+        break;
+      } catch (listenError) {
+        if (listenError.code === 'EADDRINUSE') {
+          console.warn(`⚠️ Port ${currentPort} is in use, trying ${currentPort + 1}...`);
+          currentPort += 1;
+          continue;
+        }
+
+        throw listenError;
+      }
+    }
+
+    if (!serverStarted) {
+      throw new Error(`Unable to start server. Ports ${basePort}-${basePort + maxPortRetries} are all in use.`);
+    }
 
   } catch (error) {
     console.error('❌ Database connection failed:', error);

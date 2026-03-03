@@ -9,7 +9,10 @@ export const issueBook = async ({ student_id, book_id, issue_date, due_date }) =
 };
 
 export const returnBook = async ({ transaction_id, return_date }) => {
-  await pool.query('UPDATE transactions SET return_date = ?, status = ? WHERE id = ?', [return_date, 'returned', transaction_id]);
+  await pool.query(
+    'UPDATE transactions SET return_date = ?, return_at = CURRENT_TIMESTAMP, status = ? WHERE id = ?',
+    [return_date, 'returned', transaction_id]
+  );
 };
 
 export const getTransactions = async () => {
@@ -37,6 +40,14 @@ export const getStudentTransactions = async (studentId) => {
 
 export const getOpenTransactionById = async (transactionId) => {
   const [rows] = await pool.query('SELECT * FROM transactions WHERE id = ? AND status = ?', [transactionId, 'issued']);
+  return rows[0];
+};
+
+export const getOpenTransactionByIdAndStudent = async (transactionId, studentId) => {
+  const [rows] = await pool.query(
+    'SELECT * FROM transactions WHERE id = ? AND student_id = ? AND status = ?',
+    [transactionId, studentId, 'issued']
+  );
   return rows[0];
 };
 
