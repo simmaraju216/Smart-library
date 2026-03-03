@@ -1,14 +1,6 @@
 import axios from "axios";
 
-/*
-  IMPORTANT:
-  In Vercel → Settings → Environment Variables
-  You MUST set:
-
-  VITE_API_URL = https://smart-library-n8ze.onrender.com/api
-*/
-
-const baseURL = import.meta.env. VITE_API_URL = https://smart-library-n8ze.onrender.com/api;
+const baseURL = import.meta.env.VITE_API_URL;
 
 if (!baseURL) {
   console.error("❌ VITE_API_URL is not defined!");
@@ -17,10 +9,6 @@ if (!baseURL) {
 const api = axios.create({
   baseURL
 });
-
-/* ===========================
-   Attach JWT Token
-=========================== */
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -31,10 +19,6 @@ api.interceptors.request.use((config) => {
 
   return config;
 });
-
-/* ===========================
-   Handle 401 Unauthorized
-=========================== */
 
 api.interceptors.response.use(
   (response) => response,
