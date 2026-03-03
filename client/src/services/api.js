@@ -6,7 +6,7 @@
 import axios from "axios";
 
 // TODO (Production): Set VITE_API_URL in environment and remove localhost fallback.
-const baseURL = import.meta.env.VITE_API_URL?.trim() || "http://localhost:5000/api";
+const baseURL = import.meta.env.VITE_API_URL?.trim() || "https://smart-library-n8ze.onrender.com";
 
 if (!import.meta.env.VITE_API_URL) {
   console.warn("⚠️ VITE_API_URL is not defined. Falling back to http://localhost:5000/api");
