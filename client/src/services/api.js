@@ -1,3 +1,8 @@
+// api.js
+// Axios instance for making API requests to the backend.
+// Uses VITE_API_URL environment variable for the base URL.
+// If VITE_API_URL is not set, defaults to http://localhost:5000/api (for local development).
+// Make sure to set VITE_API_URL in your .env file for production deployments.
 import axios from "axios";
 
 // TODO (Production): Set VITE_API_URL in environment and remove localhost fallback.
