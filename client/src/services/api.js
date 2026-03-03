@@ -8,7 +8,7 @@ import axios from "axios";
   VITE_API_URL = https://smart-library-n8ze.onrender.com/api
 */
 
-const baseURL = import.meta.env.VITE_API_URL;
+const baseURL = import.meta.env. VITE_API_URL = https://smart-library-n8ze.onrender.com/api;
 
 if (!baseURL) {
   console.error("❌ VITE_API_URL is not defined!");
