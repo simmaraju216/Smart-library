@@ -1,17 +1,19 @@
 import axios from "axios";
 
-const baseURL = import.meta.env.VITE_API_URL || "";
+// TODO (Production): Set VITE_API_URL in environment and remove localhost fallback.
+const baseURL = import.meta.env.VITE_API_URL?.trim() || "http://localhost:5000/api";
 
 if (!import.meta.env.VITE_API_URL) {
-  console.error("❌ VITE_API_URL is not defined!");
+  console.warn("⚠️ VITE_API_URL is not defined. Falling back to http://localhost:5000/api");
 }
 
 const api = axios.create({
-  baseURL: baseURL,
+  baseURL
 });
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
+  config.headers = config.headers || {};
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
