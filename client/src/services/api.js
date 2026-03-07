@@ -11,7 +11,7 @@ const isLocalHost =
   ["localhost", "127.0.0.1"].includes(window.location.hostname);
 
 // In local development, force relative /api to use Vite proxy and avoid stale cloud API env overrides.
-const baseURL = isLocalHost ? "/api" : configuredApiUrl || "http://localhost:5000/api";
+const baseURL = isLocalHost ? "/api" : configuredApiUrl || "https://smart-library-n8ze.onrender.com";
 
 if (!configuredApiUrl && !isLocalHost) {
   console.warn("⚠️ VITE_API_URL is not defined. Falling back to http://localhost:5000/api");
