@@ -1,7 +1,8 @@
 import express from 'express';
-import { login, resetPassword } from '../controllers/authController.js';
+import { login, me, resetPassword, updateMe } from '../controllers/authController.js';
 import { requireFields } from '../middleware/validation.js';
 import { sendSMS } from '../services/externalServices.js';
+import { authMiddleware } from '../middleware/auth.js';
 
 const router = express.Router();
 const otpStore = new Map();
@@ -10,6 +11,8 @@ const generateOtp = () => String(Math.floor(100000 + Math.random() * 900000));
 
 router.post('/login', requireFields(['email', 'password']), login);
 router.post('/reset-password', requireFields(['userId', 'newPassword']), resetPassword);
+router.get('/me', authMiddleware, me);
+router.patch('/me', authMiddleware, updateMe);
 router.post('/send-otp', requireFields(['phone']), async (req, res) => {
     const { phone } = req.body;
     const otp = generateOtp();

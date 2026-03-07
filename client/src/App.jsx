@@ -47,7 +47,7 @@ const Layout = ({ children }) => {
           <Sidebar open={sidebarOpen} onClose={closeSidebar} />
         </div>
         {/* Main Content Scrollable */}
-        <main className="flex-1 ml-0 md:ml-64 p-4 overflow-auto h-[calc(100vh-5rem)]">{children}</main>
+        <main className="flex-1 ml-0 md:ml-64 px-3 py-4 md:pl-4 md:pr-4 overflow-auto h-[calc(100vh-5rem)] lg:[scrollbar-width:none] lg:[-ms-overflow-style:none] lg:[&::-webkit-scrollbar]:hidden">{children}</main>
       </div>
       <Footer />
     </div>

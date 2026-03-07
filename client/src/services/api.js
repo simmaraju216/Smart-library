@@ -5,10 +5,15 @@
 // Make sure to set VITE_API_URL in your .env file for production deployments.
 import axios from "axios";
 
-// TODO (Production): Set VITE_API_URL in environment and remove localhost fallback.
-const baseURL = import.meta.env.VITE_API_URL?.trim() || "https://smart-library-n8ze.onrender.com";
+const configuredApiUrl = import.meta.env.VITE_API_URL?.trim();
+const isLocalHost =
+  typeof window !== "undefined" &&
+  ["localhost", "127.0.0.1"].includes(window.location.hostname);
 
-if (!import.meta.env.VITE_API_URL) {
+// In local development, force relative /api to use Vite proxy and avoid stale cloud API env overrides.
+const baseURL = isLocalHost ? "/api" : configuredApiUrl || "http://localhost:5000/api";
+
+if (!configuredApiUrl && !isLocalHost) {
   console.warn("⚠️ VITE_API_URL is not defined. Falling back to http://localhost:5000/api");
 }
 
